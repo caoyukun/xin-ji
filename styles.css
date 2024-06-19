@@ -1,0 +1,90 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.editor {
+    width: 80%;
+    height: 80%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: #fff;
+    outline: none;
+}
+
+.line {
+    margin: 0;
+}
+
+xj-block {
+    display: block;
+    outline: none;
+    margin: 0;
+    padding: 5px;
+    height: 1em;
+    width: 100%;
+}
+
+.line[data-markdown]:before {
+    content: attr(data-markdown);
+    position: absolute;
+    left: 0;
+    color: transparent;
+    user-select: none;
+    pointer-events: none;
+}
+
+.h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.h4 {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.h5 {
+    font-size: 0.83em;
+    font-weight: bold;
+}
+
+.h6 {
+    font-size: 0.67em;
+    font-weight: bold;
+}
+
+.blockquote {
+    padding-left: 10px;
+    border-left: 3px solid #ccc;
+    color: #666;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.link {
+    color: blue;
+    text-decoration: underline;
+}

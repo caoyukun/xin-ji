@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WYSIWYG Markdown Editor</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="./block/block.js"></script>
+</head>
+<body>
+  <div></div>
+
+  <div id="editor" class="editor">
+    <xj-block></xj-block>
+  </div>
+
+  <script>
+    const editor = document.getElementById('editor');
+
+    // 初始化编辑器内容
+
+    // 监听输入事件处理行内容变化
+
+    // 监听键盘事件，处理回车键换行
+    // editor.addEventListener('keydown', (event) => {
+    //   if (event.key === 'Enter') {
+    //     document.execCommand('insertHTML', false, '<div class="line"><br></div>');
+    //     event.preventDefault();
+    //   }
+    // });
+
+    function getLineElement(node) {
+      while (node && !node.classList?.contains('line')) {
+        node = node.parentNode;
+      }
+      return node;
+    }
+
+    function saveCursorPosition(lineElement, range) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(lineElement);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      return preCaretRange.toString().length;
+    }
+
+    function restoreCursorPosition(lineElement, cursorPosition) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.setStart(lineElement.firstChild || lineElement, Math.min(cursorPosition, (lineElement.textContent.length || 0)));
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    function handleLineChange(lineElement) {
+      const line = lineElement.textContent;
+      const markdownPrefix = getMarkdownPrefix(line);
+      const actualText = line.replace(markdownPrefix, '').trim();
+      lineElement.setAttribute('data-markdown', markdownPrefix);
+      lineElement.textContent = actualText;
+      applyMarkdown(lineElement);
+    }
+
+    function getMarkdownPrefix(line) {
+      if (/^###### /.test(line)) {
+        return '###### ';
+      } else if (/^##### /.test(line)) {
+        return '##### ';
+      } else if (/^#### /.test(line)) {
+        return '#### ';
+      } else if (/^### /.test(line)) {
+        return '### ';
+      } else if (/^## /.test(line)) {
+        return '## ';
+      } else if (/^# /.test(line)) {
+        return '# ';
+      } else if (/^\> /.test(line)) {
+        return '> ';
+      }
+      return '';
+    }
+
+    function applyMarkdown(element) {
+      let text = element.textContent;
+      const markdownPrefix = element.getAttribute('data-markdown').trim();
+
+      switch (markdownPrefix) {
+        case '#':
+          element.className = 'line h1';
+          break;
+        case '##':
+          element.className = 'line h2';
+          break;
+        case '###':
+          element.className = 'line h3';
+          break;
+        case '####':
+          element.className = 'line h4';
+          break;
+        case '#####':
+          element.className = 'line h5';
+          break;
+        case '######':
+          element.className = 'line h6';
+          break;
+        case '>':
+          element.className = 'line blockquote';
+          break;
+        default:
+          element.className = 'line';
+      }
+
+      text = text.replace(/\*\*(.*?)\*\*/g, '<span class="bold">**$1**</span>');
+      text = text.replace(/\*(.*?)\*/g, '<span class="italic">*$1*</span>');
+      text = text.replace(/$ (.*?) $$ (.*?) $/g, '<a href="$2" class="link">[$1]($2)</a>');
+      element.innerHTML = text;
+    }
+
+    // 监听子节点变化，处理新增的行
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          mutation.addedNodes.forEach(node => {
+            if (node.classList && node.classList.contains('line')) {
+              handleLineChange(node);
+            }
+          });
+        }
+      }
+    });
+
+    observer.observe(editor, { childList: true, subtree: true });
+  </script>
+</body>
+</html>
