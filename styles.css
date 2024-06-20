@@ -34,6 +34,7 @@ xj-editor {
 }
 
 xj-block {
+    font-size: 1em;
     display: block;
     outline: none;
     margin: 0;
@@ -51,9 +52,20 @@ xj-block {
     pointer-events: none;
 }
 
+.h1::before {
+    content: '# ';
+    visibility: hidden;
+}
+
+.h1::after {
+    content: '# ';
+    position: absolute;
+    left: 0;
+}
+
 .h1 {
-    font-size: 2em;
-    font-weight: bold;
+    position: relative;
+    display: inline-block;
 }
 
 .h2 {

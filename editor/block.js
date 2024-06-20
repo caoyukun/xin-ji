@@ -70,10 +70,10 @@ class Block extends HTMLElement {
                 const currentPosition = currentRange.startOffset;
                 const siblingContent = siblingBlock.textContent;
                 const siblingRange = document.createRange();
-                
+
                 // 计算新位置，尝试保持原有光标位置的相对比例
                 const newPosition = Math.min(siblingContent.length, currentPosition);
-                
+
                 siblingRange.setStart(siblingBlock.firstChild, newPosition);
                 siblingRange.setEnd(siblingBlock.firstChild, newPosition);
                 const selection = window.getSelection();
@@ -101,17 +101,45 @@ class Block extends HTMLElement {
     }
 
     getMarkdownClass(content) {
-        if (/^# /.test(content)) {
-            return 'h1';
-        } else if (/^## /.test(content)) {
-            return 'h2';
-        } else if (/^### /.test(content)) {
-            return 'h3';
-        } else if (/^#### /.test(content)) {
-            return 'h4';
-        } else if (/^##### /.test(content)) {
-            return 'h5';
+        // 标题
+        if (/^#{1,6} /.test(content)) {
+            const level = content.match(/^#{1,6}/)[0].length;
+            return `h${level}`;
         }
+        // 加粗
+        else if (/\*\*(.*?)\*\*/.test(content)) {
+            return 'bold';
+        }
+        // 斜体
+        else if (/\*(.*?)\*/.test(content)) {
+            return 'italic';
+        }
+        // 代码块（行内）
+        else if (/\`(.*?)\`/.test(content)) {
+            return 'inline-code';
+        }
+        // 代码块（多行）
+        else if (/^\s*```[\s\S]*?```[\s\S]*$/gm.test(content)) {
+            return 'code-block';
+        }
+        // 无序列表
+        else if (/^-\s+.*$/.test(content)) {
+            return 'unordered-list-item';
+        }
+        // 有序列表
+        else if (/^\d+\.\s+.*$/.test(content)) {
+            return 'ordered-list-item';
+        }
+        // 链接
+        else if (/\[(.*?)\]\((.*?)\)/.test(content)) {
+            return 'link';
+        }
+        // 图片
+        else if (/\!\[(.*?)\]\((.*?)\)/.test(content)) {
+            return 'image';
+        } else if (/^\> /.test(content)) {
+            return 'blockquote';
+          }
 
         return '';
     }
