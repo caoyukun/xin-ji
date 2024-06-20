@@ -67,14 +67,12 @@ class Block extends HTMLElement {
             siblingBlock.focus();
 
             if (currentRange) {
-                const siblingContent = siblingBlock.innerHTML;
+                const currentPosition = currentRange.startOffset;
+                const siblingContent = siblingBlock.textContent;
                 const siblingRange = document.createRange();
                 
                 // 计算新位置，尝试保持原有光标位置的相对比例
-                const newPosition = Math.min(
-                    siblingContent.length,
-                    Math.max(0, Math.round((currentRange.startOffset / this.textContent.length) * siblingContent.length))
-                );
+                const newPosition = Math.min(siblingContent.length, currentPosition);
                 
                 siblingRange.setStart(siblingBlock.firstChild, newPosition);
                 siblingRange.setEnd(siblingBlock.firstChild, newPosition);

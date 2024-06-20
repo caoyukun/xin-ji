@@ -51,7 +51,7 @@ class Editor extends HTMLElement {
 
         const range = document.createRange();
         range.selectNodeContents(currentBlock);
-        if (range.toString() === window.getSelection().toString()) {
+        if (range.toString().trim() === window.getSelection().toString()) {
             const allBlocks = Array.from(this.querySelectorAll('xj-block'));
             let combinedRange = null;
             for (const block of allBlocks) {
