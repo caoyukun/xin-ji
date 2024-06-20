@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WYSIWYG Markdown Editor</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="./block/block.js"></script>
+  <script src="./editor/block.js"></script>
+  <script src="./editor/editor.js"></script>
 </head>
 <body>
   <div></div>
 
-  <div id="editor" class="editor">
-    <xj-block></xj-block>
-  </div>
+  <xj-editor></xj-editor>
 
   <script>
     const editor = document.getElementById('editor');
@@ -129,7 +128,7 @@
       }
     });
 
-    observer.observe(editor, { childList: true, subtree: true });
+    // observer.observe(editor, { childList: true, subtree: true });
   </script>
 </body>
 </html>
