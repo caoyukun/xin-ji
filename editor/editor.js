@@ -1,7 +1,15 @@
 class Editor extends HTMLElement {
 
     connectedCallback() {
-        this.innerHTML = `<xj-block></xj-block>`;
+        this.contentEditable = true;
+        const block = document.createElement('xj-block');
+        this.appendChild(block);
+        block.focus();
+
+        this.addEventListener('input', (event) => {
+            const currentBlock = this.getClosestBlock();
+            currentBlock.applyMarkdown();
+        })
 
         this.addEventListener('click', (event) => {
             event.preventDefault();
@@ -15,10 +23,34 @@ class Editor extends HTMLElement {
         });
 
         this.addEventListener('keydown', (event) => {
-            if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
-                event.preventDefault(); // 阻止默认全选行为
-                this.selectAllContent();
+            switch (event.key) {
+                case 'a':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault(); // 阻止默认全选行为
+                        this.selectAllContent();
+                    }
+                    break;
+                case 'Enter':
+                    event.preventDefault();
+                    const currentBlock = this.getClosestBlock();
+                    currentBlock.handleOnEnter();
+                    const newBlock = document.createElement('xj-block');
+                    this.insertBefore(newBlock, currentBlock.nextSibling);
+
+                    const textNode = document.createTextNode('');
+                    newBlock.appendChild(textNode);
+
+                    const range = document.createRange();
+                    range.setStart(textNode, 0);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    newBlock.focus();
+                    break;
+                default:
             }
+
         });
     }
 
@@ -37,14 +69,14 @@ class Editor extends HTMLElement {
         selection.removeAllRanges();
 
         // 将新创建的范围添加到选择中，从而定位光标
-        selection.addRange(range);
+        selection.addRange(range);  
 
-        this.focus();
+        lastBlock.focus();
     }
 
     selectAllContent() {
         const selection = window.getSelection();
-        const currentBlock = document.activeElement.closest('xj-block');
+        const currentBlock = this.getClosestBlock();
         if (!selection || !currentBlock) {
             return;
         }
@@ -77,6 +109,25 @@ class Editor extends HTMLElement {
             selection.removeAllRanges();
             selection.addRange(range);
         }
+    }
+
+    getClosestBlock() {
+        // 获取当前的Selection对象
+        var selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            // 如果有选区，获取第一个Range
+            var range = selection.getRangeAt(0);
+            // 获取Range的起始容器节点
+            let node = range.startContainer;
+            
+            for (let node = range.startContainer; node; node = node.parentNode) {
+                if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'XJ-BLOCK') {
+                    return node;
+                }
+            }
+        }
+        // 如果没有选中内容，返回null或者其他默认值
+        return null;
     }
 }
 

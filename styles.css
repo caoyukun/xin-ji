@@ -38,32 +38,66 @@ xj-block {
     display: block;
     outline: none;
     margin: 0;
-    padding: 5px;
+    padding: 5px 0;
     height: 1em;
     width: 100%;
 }
 
-.line[data-markdown]:before {
-    content: attr(data-markdown);
-    position: absolute;
-    left: 0;
-    color: transparent;
-    user-select: none;
-    pointer-events: none;
+span.h1 {
+    display: none;
 }
 
-.h1::before {
-    content: '# ';
-    visibility: hidden;
+xj-block[data-markdown=h1] {
+    font-size: 2em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
 }
 
-.h1::after {
-    content: '# ';
-    position: absolute;
-    left: 0;
+xj-block[data-markdown=h2] {
+    font-size: 1.8em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+}
+
+xj-block[data-markdown=h3] {
+    font-size: 1.6em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+}
+
+xj-block[data-markdown=h4] {
+    font-size: 1.4em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+}
+
+xj-block[data-markdown=h5] {
+    font-size: 1.2em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+}
+
+xj-block[data-markdown=h6] {
+    font-size: 1em;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+}
+
+xj-block[data-markdown=blockquote] {
+    padding-left: 10px;
+    border-left: 3px solid #ccc;
+    color: #666;
 }
 
 .h1 {
+    font-size: 2em;
+    font-weight: bold;
     position: relative;
     display: inline-block;
 }
@@ -93,11 +127,7 @@ xj-block {
     font-weight: bold;
 }
 
-.blockquote {
-    padding-left: 10px;
-    border-left: 3px solid #ccc;
-    color: #666;
-}
+
 
 .bold {
     font-weight: bold;
