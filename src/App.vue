@@ -6,7 +6,7 @@ import { ref } from 'vue'
 const split1 = ref(0.8)
 const split2 = ref(0.25)
 
-const treeData = ref([
+const treeData = [
   {
     id: 100,
     label: '组件总览'
@@ -170,7 +170,35 @@ const treeData = ref([
       { id: 804, label: 'Calendar 日历' }
     ]
   }
-])
+]
+
+const treeDataRef = ref(treeData)
+
+const mindMapData = ref({
+  'nodeData': {
+    'id': 'c9ee6647385c42de',
+    'topic': '',
+    'root': true,
+    'children': []
+  }
+})
+
+const handleNodeClick = (data) => {
+  const rootData = treeData.find(t => t.id === parseInt(data.id.toString().charAt(0) + '00'));
+  mindMapData.value.nodeData.topic = rootData.label;
+  mindMapData.value.nodeData.children = rootData.children.map(t => convertTreeMenuData2MindMapData(t));
+}
+
+function convertTreeMenuData2MindMapData(treeData) {
+  const mindMapData = {
+    'id': '' + treeData.id,
+    'topic': treeData.label
+  }
+  if (treeData.children) {
+    mindMapData.children = treeData.children.map(t => convertTreeMenuData2MindMapData(t))
+  }
+  return mindMapData;
+}
 </script>
 
 <template>
@@ -181,7 +209,7 @@ const treeData = ref([
           <tiny-split v-model="split2" trigger-simple collapse-left-top three-areas>
             <template #left>
               <div class="split-sidebar">
-                <tiny-tree-menu class="tree-menu" :data="treeData"></tiny-tree-menu>
+                <tiny-tree-menu class="tree-menu" :data="treeDataRef" draggable @node-click="handleNodeClick"></tiny-tree-menu>
               </div>
             </template>
             <template #right>
@@ -190,7 +218,9 @@ const treeData = ref([
           </tiny-split>
         </template>
         <template #right>
-          <div class="split-content">内容C区</div>
+          <div class="split-content">
+            <tiny-mind-map class="demo-mind-map-export-date" ref="mindmap" v-model="mindMapData" />
+          </div>
         </template>
       </tiny-split>
     </div>
