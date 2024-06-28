@@ -1,6 +1,4 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
 
 const split1 = ref(0.8)
@@ -172,7 +170,16 @@ const treeData = [
   }
 ]
 
+const value = ref('');
+
 const treeDataRef = ref(treeData)
+
+const activeName = ref('mindmap')
+
+const mindMapOptions = ref({
+  'draggable': true,
+  'toolBar': true
+})
 
 const mindMapData = ref({
   'nodeData': {
@@ -209,7 +216,8 @@ function convertTreeMenuData2MindMapData(treeData) {
           <tiny-split v-model="split2" trigger-simple collapse-left-top three-areas>
             <template #left>
               <div class="split-sidebar">
-                <tiny-tree-menu class="tree-menu" :data="treeDataRef" draggable @node-click="handleNodeClick"></tiny-tree-menu>
+                <tiny-tree-menu class="tree-menu" :data="treeDataRef" draggable
+                  @node-click="handleNodeClick"></tiny-tree-menu>
               </div>
             </template>
             <template #right>
@@ -219,8 +227,18 @@ function convertTreeMenuData2MindMapData(treeData) {
         </template>
         <template #right>
           <div class="split-content">
-            <tiny-mind-map class="demo-mind-map-export-date" ref="mindmap" v-model="mindMapData" />
+            <tiny-mind-map class="demo-mind-map-export-date" ref="mindmap" v-model="mindMapData" :options="mindMapOptions"/>
           </div>
+          <!-- <tiny-tabs class="xj-tabs" v-model="activeName" position="right">
+              <tiny-tab-item title="🧠" name="mindmap">
+                <div class="split-content">
+                  <tiny-mind-map class="demo-mind-map-export-date" ref="mindmap" v-model="mindMapData" />
+                </div>
+              </tiny-tab-item>
+              <tiny-tab-item title="🏷️" name="tip">
+                标签管理
+              </tiny-tab-item>
+            </tiny-tabs> -->
         </template>
       </tiny-split>
     </div>
@@ -243,12 +261,29 @@ function convertTreeMenuData2MindMapData(treeData) {
 
 .split-content {
   height: 100%;
+  width: 100%;
   display: flex;
+  position: absolute;
   justify-content: center;
   align-items: center;
 }
 
 tiny-tree-menu {
   width: 100%;
+}
+
+.tiny-mind-map {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.xj-tabs {
+  width: 100%;
+  height: 100%;
+}
+
+.tiny-tabs__content {
+  line-height: 1.5;
 }
 </style>
